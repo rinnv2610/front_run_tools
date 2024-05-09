@@ -34,30 +34,36 @@ class ApeBondService:
         try:
             logger.info("ApeBondService: deposit called")
 
-            pid, amount = self.process_bond(data.get("input"))
+            params = data.get("contractCall").get("params")
+            pid, amount = int(params.get("_pid")), int(params.get("_amount"))
 
             self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
-
             contract_address = self.web3.to_checksum_address(self.bond_tracking)
             contract = self.web3.eth.contract(address=contract_address, abi=self.contract_abi)
 
             account = Account.from_key(self.private_key)
-            transaction = contract.functions.deposit(pid, amount, account.address).build_transaction({
+            json_txn = {
                 'chainId': self.chain_id,
                 'gas': data.get("gas"),  # 600000
                 'gasPrice': self.web3.to_wei(data.get("maxFeePerGasGwei") + Config.GAS_FEE_ADD, 'gwei'),
                 'nonce': self.web3.eth.get_transaction_count(account.address),
-            })
+            }
+
+            transaction = contract.functions.deposit(pid, amount, account.address).build_transaction(json_txn)
 
             # Sign transaction by private key
             signed_transaction = self.web3.eth.account.sign_transaction(transaction, self.private_key)
+            logger.info("Transaction after sign")
 
             # Send transaction signed to Ethereum
             tx_hash = self.web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
 
             # Wait for the transaction to be mined
-            # self.web3.eth.wait_for_transaction_receipt(tx_hash)
+            logger.info("Transaction before mine")
+            self.web3.eth.wait_for_transaction_receipt(tx_hash)
+
             logger.info("ApeBondService: deposit called successfully!")
-            return tx_hash
+            return tx_hash.hex()
         except Exception as e:
-            logger.warning("ApeBondService: deposit called ERROR with ", exc_info=e)
+            logger.warning("ApeBondService: deposit called ERROR")
+            raise ValueError(e)

@@ -2,6 +2,7 @@ import logging
 
 import requests
 
+from common import handle_transaction_link
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,8 @@ class TelegramBot:
         url = self.send_message_to_channel_url.format(bot_token=self.bot_token)
 
         try:
+            transaction_link = handle_transaction_link(chain_id=Config.CHAIN_ID, transaction=message)
+            message = f'<a href="{transaction_link}">Click to watch transaction</a>'
             response = requests.post(url, json=dict(chat_id=self.chat_id, text=message, parse_mode="HTML"))
 
             if response.status_code != 200:

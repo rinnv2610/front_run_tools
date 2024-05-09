@@ -8,7 +8,7 @@ class Config:
     # TELEGRAM
     TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
     TELEGRAM_BOT_SEND_MESSAGE_CHANNEL_URL = os.environ.get("TELEGRAM_BOT_SEND_MESSAGE_CHANNEL_URL")
-    CHAT_ID = os.environ.get("CHAT_ID")
+    CHAT_ID = int(os.environ.get("CHAT_ID"))
 
     # BLOCKCHAIN
     PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
@@ -16,9 +16,9 @@ class Config:
     HTTP_PROVIDER = os.environ.get("HTTP_PROVIDER")
     SMART_CONTRACT_TRACKING = os.environ.get("SMART_CONTRACT_TRACKING")
     BLOCK_NATIVE_API_KEY = os.environ.get("BLOCK_NATIVE_API_KEY")
-    NETWORK_ID = os.environ.get("NETWORK_ID")
-    CHAIN_ID = os.environ.get("CHAIN_ID")
-    GAS_FEE_ADD = os.environ.get("GAS_FEE_ADD")
+    NETWORK_ID = int(os.environ.get("NETWORK_ID"))
+    CHAIN_ID = int(os.environ.get("CHAIN_ID"))
+    GAS_FEE_ADD = int(os.environ.get("GAS_FEE_ADD"))
     CONTRACT_ABI = [
         {
             "constant": False,
