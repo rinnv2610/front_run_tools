@@ -10,7 +10,7 @@ from logger_config import app_logger as logger
 class ApeBondService:
     def __init__(self):
         self.web3 = Web3(provider=Web3.HTTPProvider(Config.HTTP_PROVIDER))
-        self.bond_tracking = Config.SMART_CONTRACT_TRACKING
+        # self.bond_tracking = Config.SMART_CONTRACT_TRACKING
         self.private_key = get_private_key()
         self.contract_abi = Config.CONTRACT_ABI
         self.chain_id = Config.CHAIN_ID
@@ -24,7 +24,7 @@ class ApeBondService:
 
             # self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
             # contract_address = self.web3.to_checksum_address(self.bond_tracking)
-            contract = self.web3.eth.contract(address=self.bond_tracking, abi=self.contract_abi)
+            contract = self.web3.eth.contract(address=data.get("to"), abi=self.contract_abi)
 
             account = Account.from_key(self.private_key)
             json_txn = {
