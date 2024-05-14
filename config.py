@@ -1,3 +1,4 @@
+import json
 import os
 from dotenv import load_dotenv
 
@@ -19,6 +20,8 @@ class Config:
     NETWORK_ID = int(os.environ.get("NETWORK_ID"))
     CHAIN_ID = int(os.environ.get("CHAIN_ID"))
     GAS_FEE_ADD = int(os.environ.get("GAS_FEE_ADD"))
+    BLACK_USERS = json.loads(os.environ.get("BLACK_USERS"))
+    BONDS_CONFIG = json.loads(os.environ.get("BONDS_CONFIG"))
     CONTRACT_ABI = [
         {
             "constant": False,
@@ -41,7 +44,7 @@ class Config:
             ],
             "name": "deposit",
             "outputs": [],
-            "payable": True,  # Đảm bảo hàm có thể nhận ETH
+            "payable": True,
             "stateMutability": "payable",
             "type": "function"
         }

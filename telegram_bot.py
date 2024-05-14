@@ -1,11 +1,8 @@
-import logging
-
 import requests
 
 from common import handle_transaction_link
 from config import Config
-
-logger = logging.getLogger(__name__)
+from logger_config import app_logger as logger
 
 
 class TelegramBot:

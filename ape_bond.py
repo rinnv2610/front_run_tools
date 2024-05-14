@@ -1,34 +1,19 @@
-import logging
-
 from eth_account import Account
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
 
+from common import get_private_key
 from config import Config
-
-logger = logging.getLogger(__name__)
+from logger_config import app_logger as logger
 
 
 class ApeBondService:
     def __init__(self):
         self.web3 = Web3(provider=Web3.HTTPProvider(Config.HTTP_PROVIDER))
         self.bond_tracking = Config.SMART_CONTRACT_TRACKING
-        self.private_key = Config.PRIVATE_KEY
+        self.private_key = get_private_key()
         self.contract_abi = Config.CONTRACT_ABI
         self.chain_id = Config.CHAIN_ID
-
-    def process_bond(self, input_hash: str) -> (int, int):
-        try:
-            logger.info("ApeBondService: process_bond called")
-
-            contract = self.web3.eth.contract(abi=self.contract_abi)
-            decoded_input = contract.decode_function_input(input_hash)
-            decoded_params = decoded_input[1]
-
-            logger.info("ApeBondService: process_bond called successfully!")
-            return decoded_params.get("_pid"), decoded_params.get("_amount")
-        except Exception as e:
-            logger.warning("ApeBondService: process_bond called ERROR with ", exc_info=e)
 
     def deposit(self, data: dict):
         try:
@@ -37,9 +22,9 @@ class ApeBondService:
             params = data.get("contractCall").get("params")
             pid, amount = int(params.get("_pid")), int(params.get("_amount"))
 
-            self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
-            contract_address = self.web3.to_checksum_address(self.bond_tracking)
-            contract = self.web3.eth.contract(address=contract_address, abi=self.contract_abi)
+            # self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+            # contract_address = self.web3.to_checksum_address(self.bond_tracking)
+            contract = self.web3.eth.contract(address=self.bond_tracking, abi=self.contract_abi)
 
             account = Account.from_key(self.private_key)
             json_txn = {
@@ -50,16 +35,17 @@ class ApeBondService:
             }
 
             transaction = contract.functions.deposit(pid, amount, account.address).build_transaction(json_txn)
+            logger.info("ApeBondService: transaction before sign")
 
             # Sign transaction by private key
             signed_transaction = self.web3.eth.account.sign_transaction(transaction, self.private_key)
-            logger.info("Transaction after sign")
+            logger.info("ApeBondService: transaction after sign")
 
             # Send transaction signed to Ethereum
             tx_hash = self.web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
 
             # Wait for the transaction to be mined
-            logger.info("Transaction before mine")
+            logger.info("ApeBondService: transaction before mine")
             self.web3.eth.wait_for_transaction_receipt(tx_hash)
 
             logger.info("ApeBondService: deposit called successfully!")
