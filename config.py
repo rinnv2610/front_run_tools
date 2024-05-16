@@ -13,15 +13,14 @@ class Config:
 
     # BLOCKCHAIN
     PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
-    DEPOSITOR = os.environ.get("DEPOSITOR")
     HTTP_PROVIDER = os.environ.get("HTTP_PROVIDER")
-    SMART_CONTRACT_TRACKING = os.environ.get("SMART_CONTRACT_TRACKING")
     BLOCK_NATIVE_API_KEY = os.environ.get("BLOCK_NATIVE_API_KEY")
     NETWORK_ID = int(os.environ.get("NETWORK_ID"))
     CHAIN_ID = int(os.environ.get("CHAIN_ID"))
     GAS_FEE_ADD = int(os.environ.get("GAS_FEE_ADD"))
     BLACK_USERS = json.loads(os.environ.get("BLACK_USERS"))
     BONDS_CONFIG = json.loads(os.environ.get("BONDS_CONFIG"))
+    APE_BONDS_API = os.environ.get("APE_BONDS_API")
     CONTRACT_ABI = [
         {
             "constant": False,
