@@ -24,8 +24,10 @@ async def handler_transaction(transaction, unsubscribe):
     bond = list(filter(lambda x: x.get("bond_contract") == transaction.get("to"), Config.BONDS_CONFIG))[0]
     bond_contract = bond.get("bond_contract").lower()
     bonds_discount = get_bonds_discount()
-    if list(filter(lambda x: x.get("bond_contract") == bond_contract and x.get("discount") <= 0, bonds_discount)):
-        logger.info("Main: transaction has discount invalid")
+    if list(filter(
+            lambda x: x.get("bond_contract") == bond_contract and
+                      (x.get("discount") <= 0 or x.get("discount") < bond.get("min_discount")), bonds_discount)):
+        logger.info("Main: bond discount invalid")
         return
 
     max_buy_times = get_max_buy_times()

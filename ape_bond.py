@@ -22,6 +22,11 @@ class ApeBondService:
 
             params = transaction.get("contractCall").get("params")
             pid, amount = int(params.get("_pid")), int(params.get("_amount"))
+
+            if (bond.get("min_value", 0) * 10**18) > pid or (bond.get("max_value", 0) * 10**18) < pid:
+                logger.info("ApeBondService: min_value or max_value are invalid")
+                return
+
             pid = handle_buy_amount(bond=bond, value=pid)
 
             # self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
