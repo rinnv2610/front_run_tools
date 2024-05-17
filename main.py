@@ -84,7 +84,7 @@ schedule.every(10).minutes.do(save_bond_discount_to_global)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--private_key", type=str, default=Config.PRIVATE_KEY)
+    parser.add_argument("--private_key", type=str, required=True)
 
     args = parser.parse_args()
     set_private_key(value=args.private_key)
