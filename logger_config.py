@@ -14,15 +14,6 @@ def setup_logger(level=logging.INFO):
 
     # Add log info to logger file
     logger.addHandler(file_handler)
-
-    # # Tạo console handler và thiết lập formatter
-    # console_handler = logging.StreamHandler()
-    # console_handler.setLevel(logging.INFO)
-    # console_handler.setFormatter(formatter)
-    #
-    # # Thêm console handler vào logger
-    # logger.addHandler(console_handler)
-
     return logger
 
 
